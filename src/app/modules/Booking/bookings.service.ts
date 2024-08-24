@@ -1,53 +1,70 @@
 import httpStatus from "http-status";
 import AppError from "../../errors/AppErrors";
-import { TRoom } from "./rooms.interface";
-import roomModel from "./rooms.model";
-
-const createRoomIntoDB = async (payload: Partial<TRoom>) => {
-  const result = await roomModel.create({
-    name: payload.name,
-    roomNo: payload.roomNo,
-    floorNo: payload.floorNo,
-    capacity: payload.capacity,
-    pricePerSlot: payload.pricePerSlot,
-    amenities: payload.amenities,
-  });
-  return result;
-};
-
-const getSingleRoomById = async (roomId: string) => {
-  const room = await roomModel.findById(roomId);
-
-  // throw error when room is empty and deleted
-  if (!room || room.isDeleted) {
+import roomModel from "../Rooms/rooms.model";
+import slotModel from "../Slots/slots.model";
+import { TBooking } from "./booking.interface";
+import bookingModel from "./bookings.model";
+import { Types } from "mongoose";
+const createBookingsIntoDB = async (payload: Partial<TBooking>) => {
+  // Check if the room exists in the database
+  const room = await roomModel.findById(payload.room);
+  if (!room) {
     throw new AppError(httpStatus.NOT_FOUND, "Room not found");
   }
-  return room;
-};
 
-const getAllRooms = async () => {
-  // get all available rooms without deleted rooms
-  const result = await roomModel.find({ isDeleted: false });
-  return result;
-};
+  // Prepare the slots array
+  const originalSlots: Types.ObjectId[] = [];
 
-const deleteRoomById = async (roomId: string) => {
-  // here just update isDeleted property for soft deleting
-  const result = await roomModel.findByIdAndUpdate(
-    roomId,
-    { isDeleted: true },
-    { new: true }
-  );
-
-  // throw error when result is empty
-  if (!result) {
-    throw new AppError(httpStatus.FORBIDDEN, "Cannot delete room");
+  for (const id of payload.slots || []) {
+    const slot = await slotModel.findById(id);
+    if (slot) {
+      if (slot.isBooked) {
+        throw new AppError(
+          httpStatus.FORBIDDEN,
+          `${slot._id} already booked. so try another`
+        );
+      }
+      slot.isBooked = true;
+      await slot.save();
+      originalSlots.push(id);
+    }
   }
+
+  // Calculate the total amount
+  const totalBookedAmount = room.pricePerSlot * originalSlots.length;
+
+  // Create the booking document
+  const booked = await bookingModel.create({
+    room: room._id,
+    slots: originalSlots, // Directly use originalSlots, no nested array
+    date: payload.date,
+    totalAmount: totalBookedAmount,
+    user: payload.user,
+  });
+
+  // Populate the slots and room fields
+  const populatedBooking = await bookingModel
+    .findById(booked._id)
+    .populate("slots")
+    .populate("room")
+    .populate("user")
+    .exec();
+
+  return populatedBooking;
+};
+
+const getAllBookingsFromDB = async () => {
+  const result = await bookingModel
+    .find({})
+    .populate("slots")
+    .populate("room")
+    .populate("user")
+    .exec();
+
   return result;
 };
-export const RoomServices = {
-  createRoomIntoDB,
-  getSingleRoomById,
-  getAllRooms,
-  deleteRoomById,
+
+export const BookingServices = {
+  createBookingsIntoDB,
+  getAllBookingsFromDB,
 };

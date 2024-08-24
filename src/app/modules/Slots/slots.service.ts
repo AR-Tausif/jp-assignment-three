@@ -21,16 +21,15 @@ const createSlotIntoDB = async (payload: Partial<TSlot>) => {
   });
 
   const result = await slotModel.create(newSlots);
-
   return result;
 };
 
 const slotAvailability = async (payload: { date: string; roomId: string }) => {
   let result;
   if (payload.date && payload.roomId) {
-    result = await slotModel.find({ isBooked: false });
-  } else {
     result = await slotModel.find({ room: payload.roomId, date: payload.date });
+  } else {
+    result = await slotModel.find({ isBooked: false });
   }
   return result;
 };

@@ -30,7 +30,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
         throw new AppError(httpStatus.FORBIDDEN, "You Are Not Authorized");
       }
 
-      req.username = decoded;
+      req.user = decoded;
       next();
     } catch (err) {
       throw new AppError(httpStatus.UNAUTHORIZED, "You Are Not Authorized");

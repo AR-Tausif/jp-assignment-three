@@ -1,9 +1,11 @@
+import { Types } from "mongoose";
+
 export type TBooking = {
-  room: string;
-  slots: string;
-  user: string;
+  room: Types.ObjectId;
+  slots: [Types.ObjectId];
+  user: Types.ObjectId;
   date: string;
-  totalAmount: string;
-  isConfirmed: string;
-  isDeleted: string;
+  totalAmount: number;
+  isConfirmed: "confirmed"| "unconfirmed" | "canceled";
+  isDeleted: boolean;
 };

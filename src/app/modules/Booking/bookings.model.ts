@@ -1,25 +1,39 @@
 import { model, Schema } from "mongoose";
-import { TRoom } from "./rooms.interface";
+import { TBooking } from "./booking.interface";
 
-const roomSchema = new Schema<TRoom>(
+const bookingSchema = new Schema<TBooking>(
   {
-    name: {
+    room: {
+      type: Schema.Types.ObjectId,
+      ref: "Room",
+      required: true,
+    },
+    slots: {
+      type: [Schema.Types.ObjectId],
+      ref: "Slot",
+      required: true,
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    date: {
       type: String,
       required: true,
     },
-    floorNo: {
+    totalAmount: {
       type: Number,
       required: true,
     },
-    capacity: {
-      type: Number,
-      required: true,
+    isConfirmed: {
+      type: String,
+      enum: ["confirmed", "unconfirmed", "canceled"],
+      deafult: "unconfirmed",
     },
-    pricePerSlot: { type: Number, required: true },
-    amenities: { type: [String], required: true },
     isDeleted: {
       type: Boolean,
-      default: false,
+      deafult: false,
     },
   },
   {
@@ -28,5 +42,5 @@ const roomSchema = new Schema<TRoom>(
   }
 );
 
-const roomModel = model<TRoom>("Room", roomSchema);
-export default roomModel;
+const bookingModel = model<TBooking>("Booking", bookingSchema);
+export default bookingModel;
