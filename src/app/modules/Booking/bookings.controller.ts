@@ -24,7 +24,17 @@ const getAllBookingsFromDB = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Bookings retrieved successfully",
+    message: "All bookings retrieved successfully",
+    data: result,
+  });
+});
+const getSingleUserBookings = catchAsync(async (req, res) => {
+  const result = await BookingServices.getSingleUserBookings(req.user.userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User bookings retrieved successfully",
     data: result,
   });
 });
@@ -32,4 +42,5 @@ const getAllBookingsFromDB = catchAsync(async (req, res) => {
 export const BookingControllers = {
   createBookingIntoDB,
   getAllBookingsFromDB,
+  getSingleUserBookings,
 };

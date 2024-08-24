@@ -16,5 +16,10 @@ router.post(
 );
 // getting a list of all booking itesm from database
 router.get("/", auth(USER_ROLE.ADMIN), BookingControllers.getAllBookingsFromDB);
+router.get(
+  "/my-bookings",
+  auth(USER_ROLE.ADMIN, USER_ROLE.USER),
+  BookingControllers.getSingleUserBookings
+);
 
 export const bookingsRoutes = router;
