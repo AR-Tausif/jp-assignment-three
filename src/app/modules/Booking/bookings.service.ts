@@ -55,7 +55,7 @@ const createBookingsIntoDB = async (payload: Partial<TBooking>) => {
 
 const getAllBookingsFromDB = async () => {
   const result = await bookingModel
-    .find({})
+    .find({ isDeleted: false })
     .populate("slots")
     .populate("room")
     .populate("user")
@@ -66,7 +66,7 @@ const getAllBookingsFromDB = async () => {
 
 const getSingleUserBookings = async (userId: string) => {
   const result = await bookingModel
-    .find({ user: userId })
+    .find({ user: userId, isDeleted: false })
     .populate("slots")
     .populate("room")
     .populate("user")
@@ -85,10 +85,19 @@ const updateBookingStatusByAdmin = async (payload: {
   );
   return result;
 };
+const deleteSingleBookingById = async (id: string) => {
+  const result = await bookingModel.findByIdAndUpdate(
+    id,
+    { isDeleted: true },
+    { new: true }
+  );
+  return result;
+};
 
 export const BookingServices = {
   createBookingsIntoDB,
   getAllBookingsFromDB,
   getSingleUserBookings,
   updateBookingStatusByAdmin,
+  deleteSingleBookingById,
 };

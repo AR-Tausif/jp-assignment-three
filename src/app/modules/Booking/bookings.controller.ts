@@ -48,7 +48,18 @@ const updateBookingStatusByAdmin = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "User bookings retrieved successfully",
+    message: "Booking updated successfully",
+    data: result,
+  });
+});
+const deleteSingleBookingById = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await BookingServices.deleteSingleBookingById(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Booking deleted successfully",
     data: result,
   });
 });
@@ -58,4 +69,5 @@ export const BookingControllers = {
   getAllBookingsFromDB,
   getSingleUserBookings,
   updateBookingStatusByAdmin,
+  deleteSingleBookingById,
 };

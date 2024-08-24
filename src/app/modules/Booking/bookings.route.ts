@@ -29,5 +29,10 @@ router.put(
   validateRequest(bookingValidations.bookingUpdateByAdmin),
   BookingControllers.updateBookingStatusByAdmin
 );
+router.delete(
+  "/:id",
+  auth(USER_ROLE.ADMIN),
+  BookingControllers.deleteSingleBookingById
+);
 
 export const bookingsRoutes = router;
