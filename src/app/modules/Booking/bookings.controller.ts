@@ -38,9 +38,24 @@ const getSingleUserBookings = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const updateBookingStatusByAdmin = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await BookingServices.updateBookingStatusByAdmin({
+    id,
+    data: req.body,
+  });
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User bookings retrieved successfully",
+    data: result,
+  });
+});
 
 export const BookingControllers = {
   createBookingIntoDB,
   getAllBookingsFromDB,
   getSingleUserBookings,
+  updateBookingStatusByAdmin,
 };

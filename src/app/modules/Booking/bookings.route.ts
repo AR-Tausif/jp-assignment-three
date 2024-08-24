@@ -16,10 +16,18 @@ router.post(
 );
 // getting a list of all booking itesm from database
 router.get("/", auth(USER_ROLE.ADMIN), BookingControllers.getAllBookingsFromDB);
+// retrieved all bookings by loggedin user id
 router.get(
   "/my-bookings",
   auth(USER_ROLE.ADMIN, USER_ROLE.USER),
   BookingControllers.getSingleUserBookings
+);
+// update the authenticated user booking isConfirmed property
+router.put(
+  "/:id",
+  auth(USER_ROLE.ADMIN),
+  validateRequest(bookingValidations.bookingUpdateByAdmin),
+  BookingControllers.updateBookingStatusByAdmin
 );
 
 export const bookingsRoutes = router;

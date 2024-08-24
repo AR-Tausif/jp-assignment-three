@@ -8,6 +8,12 @@ const bookingSchema = z.object({
   }),
 });
 
+const bookingUpdateByAdmin = z.object({
+  body: z.object({
+    isConfirmed: z.enum(["confirmed", "unconfirmed", "canceled"]),
+  }),
+});
 export const bookingValidations = {
   bookingSchema,
+  bookingUpdateByAdmin,
 };

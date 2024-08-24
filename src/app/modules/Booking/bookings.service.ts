@@ -74,8 +74,21 @@ const getSingleUserBookings = async (userId: string) => {
   return result;
 };
 
+const updateBookingStatusByAdmin = async (payload: {
+  id: string;
+  data: { isConfirmed: string };
+}) => {
+  const result = await bookingModel.findByIdAndUpdate(
+    payload.id,
+    { isConfirmed: payload.data.isConfirmed },
+    { new: true }
+  );
+  return result;
+};
+
 export const BookingServices = {
   createBookingsIntoDB,
   getAllBookingsFromDB,
   getSingleUserBookings,
+  updateBookingStatusByAdmin,
 };
