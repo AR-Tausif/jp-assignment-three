@@ -45,9 +45,34 @@ const deleteRoomById = async (roomId: string) => {
   }
   return result;
 };
+
+const updateRoomByRoomId = async ({
+  id,
+  payload,
+}: {
+  id: string;
+  payload: TRoom;
+}) => {
+  // get all available rooms without deleted rooms
+  const result = await roomModel.findById(id);
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "Room not found");
+  }
+  result.name = payload.name || result?.name;
+  result.roomNo = payload.roomNo || result?.roomNo;
+  (result.floorNo = payload.floorNo || result?.floorNo),
+    (result.capacity = payload.capacity || result?.capacity);
+  result.pricePerSlot == payload.pricePerSlot || result?.pricePerSlot;
+
+  if (payload.amenities) {
+    result?.amenities.push(...payload.amenities);
+  }
+  return result;
+};
 export const RoomServices = {
   createRoomIntoDB,
   getSingleRoomById,
   getAllRooms,
   deleteRoomById,
+  updateRoomByRoomId,
 };

@@ -24,8 +24,8 @@ const createRoomIntoDB = catchAsync(async (req, res) => {
 
 const getSingleRoomById = catchAsync(async (req, res) => {
   // get the room mongoose object id from url route params
-  const { roomId } = req.params;
-  const result = await RoomServices.getSingleRoomById(roomId as string);
+  const { id } = req.params;
+  const result = await RoomServices.getSingleRoomById(id as string);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -47,8 +47,21 @@ const getAllRooms = catchAsync(async (req, res) => {
 });
 
 const deleteRoomById = catchAsync(async (req, res) => {
-  const { roomId } = req.params;
-  const result = await RoomServices.deleteRoomById(roomId);
+  const { id } = req.params;
+  const result = await RoomServices.deleteRoomById(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Room deleted successfully",
+    data: result,
+  });
+});
+const updateRoomByRoomId = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await RoomServices.updateRoomByRoomId({
+    id,
+    payload: req.body,
+  });
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -62,4 +75,5 @@ export const RoomControllers = {
   getSingleRoomById,
   getAllRooms,
   deleteRoomById,
+  updateRoomByRoomId,
 };
