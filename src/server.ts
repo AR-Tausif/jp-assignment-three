@@ -4,12 +4,12 @@ import mongoose from "mongoose";
 
 async function main() {
   try {
-    await mongoose.connect(config.local_database_url as string);
+    await mongoose.connect(config.database_url as string);
     // await mongoose.connect(config.local_database_url as string);
 
     app.listen(config.port, () => {
       console.log(
-        `Educa-International-School server is running on Port  ${`http://localhost:${config.port}`}`
+        `Meeting-room-booking-system server is running on port http://localhost:${config.port}`
       );
     });
   } catch (error) {

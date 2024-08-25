@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
+import config from "../config";
 
 const GlobalErrorHandler: ErrorRequestHandler = (
   err,
@@ -16,7 +17,7 @@ const GlobalErrorHandler: ErrorRequestHandler = (
     errorMessage,
     message,
     errorDetails: err,
-    stack: err.stack,
+    stack: config.node_env == "development" ? err.stack : null,
   });
 };
 

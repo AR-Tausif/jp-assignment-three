@@ -14,13 +14,13 @@ router.post(
   validateRequest(RoomValidations.roomSchema),
   RoomControllers.createRoomIntoDB
 );
-// get the room with mongoose object id route function
+// get room by ID
 router.get("/:id", RoomControllers.getSingleRoomById);
-// get available all room from database route function
+// get available all rooms
 router.get("/", RoomControllers.getAllRooms);
-// delete the room with mongoose object id route function
+// delete a room (soft delete)
 router.delete("/:id", auth(USER_ROLE.ADMIN), RoomControllers.deleteRoomById);
-// update room by room id route function
+// update room details
 router.put(
   "/:id",
   auth(USER_ROLE.ADMIN),

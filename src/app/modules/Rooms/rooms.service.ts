@@ -41,7 +41,10 @@ const deleteRoomById = async (roomId: string) => {
 
   // throw error when result is empty
   if (!result) {
-    throw new AppError(httpStatus.FORBIDDEN, "Cannot delete room");
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Cannot delete room, check your provided ID"
+    );
   }
   return result;
 };

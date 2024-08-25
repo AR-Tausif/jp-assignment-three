@@ -9,29 +9,24 @@ import NotFound from "./app/middlewares/NotFound";
 import GlobalErrorHandler from "./app/middlewares/globalErrorhandler";
 import httpStatus from "http-status";
 import config from "./app/config";
-import morgan from "morgan"
 
 // parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 const origins = config.frontend_origin?.split(" ");
 
-app.use(morgan('combined'))
 app.use(
   cors({
     origin: origins,
     credentials: true,
   })
 );
-// app.use("/uploads", express.static("uploads"));
 
-// ========================
 // application routes
-// ========================
-app.use("/api/v1", router);
+app.use("/api", router);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send(`Educa-International-School server is running`);
+  res.send(`Meeting-room-booking-system server is running`);
 });
 
 app.use(GlobalErrorHandler);

@@ -29,11 +29,11 @@ const bookingSchema = new Schema<TBooking>(
     isConfirmed: {
       type: String,
       enum: ["confirmed", "unconfirmed", "canceled"],
-      deafult: "unconfirmed",
+      default: "unconfirmed",
     },
     isDeleted: {
       type: Boolean,
-      deafult: false,
+      default: false,
     },
   },
   {

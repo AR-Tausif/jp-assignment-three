@@ -17,19 +17,29 @@ const createBookingsIntoDB = async (payload: Partial<TBooking>) => {
 
   for (const id of payload.slots || []) {
     const slot = await slotModel.findById(id);
-    if (slot) {
-      if (slot.isBooked) {
-        throw new AppError(
-          httpStatus.FORBIDDEN,
-          `${slot._id} already booked. so try another`
-        );
-      }
-      slot.isBooked = true;
-      await slot.save();
+    if (!slot) {
+      throw new AppError(
+        httpStatus.NOT_FOUND,
+        `The slot of ${id} is not found on database, try with another`
+      );
+    }
+    if (!slot.isBooked) {
+      slot!.isBooked = true;
+      await slot!.save();
       originalSlots.push(id);
+    } else {
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        `${slot._id} already booked. so try another`
+      );
     }
   }
-
+  if (originalSlots.length === 0) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "You do not selected single of slot, select slot first"
+    );
+  }
   // Calculate the total amount
   const totalBookedAmount = room.pricePerSlot * originalSlots.length;
 
@@ -83,6 +93,12 @@ const updateBookingStatusByAdmin = async (payload: {
     { isConfirmed: payload.data.isConfirmed },
     { new: true }
   );
+  if (!result) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Cannot update the booking status, check your provided ID"
+    );
+  }
   return result;
 };
 const deleteSingleBookingById = async (id: string) => {
@@ -91,6 +107,12 @@ const deleteSingleBookingById = async (id: string) => {
     { isDeleted: true },
     { new: true }
   );
+  if (!result) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Cannot deleted the booking, check your provided ID"
+    );
+  }
   return result;
 };
 
